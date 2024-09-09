@@ -1,0 +1,32 @@
+services:
+  backend:
+    container_name: backend-app
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file: .env.docker
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/home/app:cached
+      - ./package.json:/home/app/package.json:cached
+    depends_on:
+      - database
+    networks:
+      - gen-network
+
+  database:
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    container_name: music-database
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: music_db
+    networks:
+      - gen-network
+
+networks:
+  gen-network:
+    driver: bridge
